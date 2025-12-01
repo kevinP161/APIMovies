@@ -1,5 +1,6 @@
 ﻿using APIMovies.DAL.Models;
 using APIMovies.DAL.Models.Dtos;
+using APIMovies.Repository;
 using APIMovies.Repository.IRepository;
 using APIMovies.Services.IServices;
 using AutoMapper;
@@ -23,9 +24,10 @@ namespace APIMovies.Services
             return _mapper.Map<ICollection<MovieDto>>(movies);
         }
 
-        public Task<MovieDto> GetMovieAsync(int id)
+        public async Task<MovieDto> GetMovieAsync(int id)
         {
-            throw new NotImplementedException();
+            var movie = await _movieRepository.GetMovieAsync(id);
+            return _mapper.Map<MovieDto>(movie);
         }
 
         public Task<bool> MovieExistsByIdAsync(int id)
@@ -38,17 +40,32 @@ namespace APIMovies.Services
             throw new NotImplementedException();
         }
 
-        public Task<bool> CreateMovieAsync(Movie movie)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<bool> UpdateMovieAsync(Movie movie)
-        {
-            throw new NotImplementedException();
-        }
-
         public Task<bool> DeleteMovieAsync(int id)
+        {
+            throw new NotImplementedException();
+        }
+
+        public async Task<MovieDto> CreateMovieAsync(MovieCreateDto movieCreateDto)
+        {
+            var movieExist = await _movieRepository.MovieExistsByNameAsync(movieCreateDto.Name);
+
+            if (movieExist)
+            {
+                throw new InvalidCastException($"Ya existe una pelicula con el nombre de {movieCreateDto.Name}");
+            }
+            var movie = _mapper.Map<Movie>(movieCreateDto);
+
+            var movieCreated = await _movieRepository.CreateMovieAsync(movie);
+
+            if (!movieCreated)
+            {
+                throw new Exception("Error al crear la pelicula");
+            }
+
+            return _mapper.Map<MovieDto>(movie);
+        }
+
+        Task<MovieDto> IMovieServices.UpdateMovieAsync(Movie movieDto)
         {
             throw new NotImplementedException();
         }

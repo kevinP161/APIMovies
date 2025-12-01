@@ -9,8 +9,8 @@ namespace APIMovies.Services.IServices
         Task<MovieDto> GetMovieAsync(int id);
         Task<bool> MovieExistsByIdAsync(int id);
         Task<bool> MovieExistsByNameAsync(string name);
-        Task<bool> CreateMovieAsync(Movie movie);
-        Task<bool> UpdateMovieAsync(Movie movie);
+        Task<MovieDto> CreateMovieAsync(MovieCreateDto movieDto);
+        Task<MovieDto> UpdateMovieAsync(Movie movieDto);
         Task<bool> DeleteMovieAsync(int id);
     }
 }
