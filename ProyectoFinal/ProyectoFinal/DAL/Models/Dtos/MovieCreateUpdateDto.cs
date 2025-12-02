@@ -2,7 +2,7 @@
 
 namespace APIMovies.DAL.Models.Dtos
 {
-    public class MovieCreateDto
+    public class MovieCreateUpdateDto
     {
         [Required(ErrorMessage = "El nombre es requerido")]
         [MaxLength(100, ErrorMessage = "El nombre no puede tener mas de 100 caracteres")]

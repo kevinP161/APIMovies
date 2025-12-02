@@ -42,10 +42,23 @@ namespace APIMovies.Services
 
         public Task<bool> DeleteMovieAsync(int id)
         {
-            throw new NotImplementedException();
+            var movieExist = _movieRepository.GetMovieAsync(id);
+
+            if (movieExist == null)
+            {
+                throw new InvalidCastException($"No se encontro la pelicula con ID: {id}");
+            }
+
+            var movieDeleted = _movieRepository.DeleteMovieAsync(id);
+
+            if (!movieDeleted.Result)
+            {
+                throw new Exception("Error al eliminar la pelicula");
+            }
+            return movieDeleted;
         }
 
-        public async Task<MovieDto> CreateMovieAsync(MovieCreateDto movieCreateDto)
+        public async Task<MovieDto> CreateMovieAsync(MovieCreateUpdateDto movieCreateDto)
         {
             var movieExist = await _movieRepository.MovieExistsByNameAsync(movieCreateDto.Name);
 
@@ -65,9 +78,33 @@ namespace APIMovies.Services
             return _mapper.Map<MovieDto>(movie);
         }
 
-        Task<MovieDto> IMovieServices.UpdateMovieAsync(Movie movieDto)
+        public async Task<MovieDto> UpdateMovieAsync(MovieCreateUpdateDto dto, int id)
         {
-            throw new NotImplementedException();
+
+            var movieExist = await _movieRepository.GetMovieAsync(id);
+
+            if (movieExist == null)
+            {
+                throw new InvalidCastException($"No se encontro la pelicula con ID: {id}");
+            }
+
+            var nameExist = await _movieRepository.MovieExistsByNameAsync(dto.Name);
+
+            if (nameExist)
+            {
+                throw new InvalidCastException($"Ya existe esa categoria con el nombre de {dto.Name}");
+            }
+
+            _mapper.Map(dto, movieExist);
+
+            var movieUpdated = await _movieRepository.UpdateMovieAsync(movieExist);
+
+            if (!movieUpdated)
+            {
+                throw new Exception("Error al actualizar la categoria");
+            }
+
+            return _mapper.Map<MovieDto>(movieExist);
         }
     }
 }
