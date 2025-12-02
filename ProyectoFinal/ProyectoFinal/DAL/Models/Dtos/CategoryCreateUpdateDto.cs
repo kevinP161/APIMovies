@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace APIMovies.DAL.Models.Dtos
 {
-    public class CategoryCreateDto
+    public class CategoryCreateUpdateDto
     {
         [Required(ErrorMessage = "El nombre es requerido")]
         [MaxLength(100, ErrorMessage = "El nombre no puede tener mas de 100 caracteres")]
